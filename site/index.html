@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>商经日报 | Business & Economics Daily</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--primary:#1a1a2e;--secondary:#16213e;--accent:#e94560;--gold:#c9a84c;--bg:#f8f6f0;--card-bg:#fff;--text:#2c2c2c;--text-light:#777;--border:#e0ddd5}
+    body{font-family:'Noto Sans SC',-apple-system,'微软雅黑',sans-serif;background:var(--bg);color:var(--text);line-height:1.8}
+    .site-header{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;border-bottom:4px solid var(--gold)}
+    .header-inner{max-width:960px;margin:0 auto;padding:36px 24px 26px;text-align:center}
+    .site-title{font-family:'Noto Serif SC',serif;font-size:44px;font-weight:900;letter-spacing:8px;color:#fff}
+    .site-title .gold{color:var(--gold)}
+    .site-subtitle{font-size:14px;color:rgba(255,255,255,0.55);margin-top:6px;letter-spacing:3px;font-weight:300}
+    .today-bar{background:rgba(255,255,255,0.06);border-top:1px solid rgba(255,255,255,0.08);padding:10px 24px;text-align:center;font-size:14px;color:rgba(255,255,255,0.7)}
+    .today-bar .date{font-family:'Noto Serif SC',serif;color:var(--gold);font-weight:600;font-size:16px}
+    .main{max-width:960px;margin:0 auto;padding:28px 24px;display:grid;grid-template-columns:1fr 280px;gap:28px}
+    @media(max-width:768px){.main{grid-template-columns:1fr;padding:16px}.site-title{font-size:30px;letter-spacing:4px}.header-inner{padding:24px 16px 18px}}
+
+    /* Article list */
+    .article-card{background:var(--card-bg);border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,0.06);border:1px solid var(--border);margin-bottom:16px;overflow:hidden;cursor:pointer;transition:all 0.2s}
+    .article-card:hover{border-color:var(--gold)}
+    .article-card.active{border-color:var(--gold);box-shadow:0 2px 12px rgba(201,168,76,0.12)}
+    .article-header{padding:20px 24px 16px;position:relative}
+    .article-category{display:inline-block;font-size:11px;font-weight:600;color:var(--accent);letter-spacing:1.5px;margin-bottom:4px}
+    .article-title{font-family:'Noto Serif SC',serif;font-size:20px;font-weight:700;line-height:1.4;color:var(--primary)}
+    .article-meta{font-size:12px;color:var(--text-light);margin-top:6px}
+    .article-excerpt{font-size:14px;color:#888;margin-top:8px;padding-right:40px;line-height:1.6}
+    .article-expand{position:absolute;right:24px;top:50%;transform:translateY(-50%);font-size:20px;color:var(--gold);transition:transform 0.3s}
+    .article-card.active .article-expand{transform:translateY(-50%) rotate(180deg)}
+    .article-body{padding:0 24px;max-height:0;overflow:hidden;transition:all 0.4s ease}
+    .article-card.active .article-body{max-height:5000px;padding:0 24px 24px}
+    .article-body p{margin-bottom:14px;text-indent:2em;font-size:15px;color:#444}
+    .article-body h3{font-family:'Noto Serif SC',serif;font-size:18px;margin:22px 0 10px;color:var(--primary);text-indent:0}
+    .article-body blockquote{margin:16px 0;padding:14px 18px;background:#f9f7f0;border-left:4px solid var(--gold);color:#555}
+    .article-body blockquote p{text-indent:0;margin-bottom:0}
+    .article-body .highlight-box{background:linear-gradient(135deg,#fdf8ed,#faf3e0);border:1px solid #e8dcc4;border-radius:8px;padding:16px 20px;margin:16px 0}
+    .article-body .highlight-box .label{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:2px;margin-bottom:4px}
+    .article-body .highlight-box p{text-indent:0;margin-bottom:0}
+    .article-body .footnote{text-align:right;color:#999;font-size:12px;margin-top:20px}
+
+    /* Sidebar */
+    .sidebar{display:flex;flex-direction:column;gap:16px}
+    .sidebar-card{background:var(--card-bg);border-radius:8px;padding:18px;border:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+    .sidebar-card h3{font-family:'Noto Serif SC',serif;font-size:15px;color:var(--primary);padding-bottom:8px;margin-bottom:10px;border-bottom:2px solid var(--bg)}
+    .sidebar-card ul{list-style:none}
+    .sidebar-card li{padding:6px 0;font-size:13px;border-bottom:1px dashed #f0f0f0;display:flex;justify-content:space-between}
+    .sidebar-card li:last-child{border-bottom:none}
+    .sidebar-card .val{color:var(--accent);font-weight:500}
+    .sidebar-card .val.green{color:#4caf50}
+    .sidebar-card p{font-size:13px;color:#666}
+
+    /* Footer */
+    .site-footer{background:var(--primary);color:rgba(255,255,255,0.45);text-align:center;padding:20px;font-size:12px;border-top:3px solid var(--gold);margin-top:28px}
+    .site-footer strong{color:var(--gold)}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="site-title">商经<span class="gold">日报</span></div>
+      <div class="site-subtitle">ECONOMICS · ENTREPRENEURSHIP · BUSINESS</div>
+    </div>
+    <div class="today-bar">
+      📅 <span class="date" id="todayDate"></span>
+    </div>
+  </header>
+
+  <div class="main" id="app">
+    <div id="articleList"></div>
+
+    <div class="sidebar">
+      <div class="sidebar-card">
+        <h3>📰 数据速览</h3>
+        <ul>
+          <li>离岸人民币 <span class="val">6.7647</span></li>
+          <li>上证指数 <span class="val">4,057</span></li>
+          <li>创业板指 <span class="val">3,951</span></li>
+          <li>WTI原油 <span class="val">$91.94</span></li>
+          <li>黄金现货 <span class="val">$4,479</span></li>
+        </ul>
+      </div>
+      <div class="sidebar-card">
+        <h3>📅 关于日报</h3>
+        <p>商经日报由 KOKO 🐨 每日出品。内容涵盖经济、创业、商业三大板块，仅供参考。</p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <p>商经日报 · 由 <strong>KOKO 🐨</strong> 出品 · © <span id="footerYear"></span> 仅供参考</p>
+  </footer>
+
+  <script>
+    const articles = [
+      {
+        id:5,
+        cat:"🌍 宏观风向",
+        title:"中东风暴叠加AI通胀：全球市场双重震荡，李宁签约库里引爆国牌出海",
+        excerpt:"伊朗威胁封锁霍尔木兹海峡，美油一度涨超8%、集运指数七周累涨60%。慧与科技盘后暴涨40%、Anthropic秘密递交IPO。阿波罗首席经济学家警告AI越强通胀越高。李宁签约库里 —— 国产品牌全球化里程碑。",
+        date:"2026.06.02",
+        edition:"第005期",
+        body:`
+          <div class="highlight-box">
+            <div class="label">📌 本期导读</div>
+            <p>今日关键词：双重震荡。一边是中东局势急剧升温——伊朗威胁封锁霍尔木兹海峡，油价飙升，海运价格暴涨；另一边是AI热潮不减反进——慧与暴涨、Anthropic抢跑IPO、美光破千。而阿波罗经济学家说了一句反直觉的话：AI越强，通胀越高，降息越难。来看看今天的关键动向。</p>
+          </div>
+
+          <h3>一、中东风暴：霍尔木兹海峡告急，油价海运双飙升</h3>
+
+        <p><strong>伊朗据称暂停对美沟通，计划彻底封锁霍尔木兹海峡。</strong>华尔街见闻消息，伊朗官员称，在以色列停止军事行动并撤出黎巴嫩之前，伊朗不会举行任何谈判。伊朗最高领袖军事顾问表示耐心有限，绝不允许海上封锁继续。与此同时，特朗普称美伊或于一周内达成协议，延长停火并重开霍尔木兹海峡。黎巴嫩总统重申外交途径是解决冲突的唯一出路。（来源：华尔街见闻）</p>
+
+        <p><strong>美油一度涨超8%，布油盘中涨逾7%。</strong>中东局势持续紧张叠加伊朗封锁威胁，WTI原油一度飙涨超8%，此后回落至$91.94/桶。现货黄金报$4,479，日内微跌0.12%。（来源：华尔街见闻、财联社）</p>
+
+        <p><strong>集运指数七周累涨超60%。</strong>财联社消息，受中东局势动荡、船司挺价等影响，集运指数（欧线）主力合约6月1日盘中最高上涨13.08%，收盘涨11.69%。上海—热那亚、上海—鹿特丹航线运价分别环比上涨10%、15%。第四届天津国际航运产业博览会今日开幕。（来源：财联社）</p>
+
+        <p><strong>厄尔尼诺今年爆发概率高达82%。</strong>据华尔街见闻，亚洲多国——印尼、马来西亚、菲律宾、印度——已启动人工增雨、节水配额、抗旱品种推广等措施应对极端气候冲击。全球农业、能源与通胀压力骤增。（来源：华尔街见闻）</p>
+
+          <h3>二、AI热潮不减：慧与暴涨、Anthropic抢跑、美光破千</h3>
+
+        <p><strong>慧与科技营收远超预期，盘后一度暴涨40%。</strong>华尔街见闻消息，慧与科技Q2营收达107亿美元，网络业务同比激增148%，调整后EPS 79美分远超预期的53美分。若涨幅延续，将创公司史上最大日涨幅。AI服务器需求持续井喷。（来源：华尔街见闻）</p>
+
+        <p><strong>美光突破1000美元大关。</strong>华尔街分析师表示，AI驱动存储需求持续扩张，HBM市场由三巨头垄断，供需紧张格局预计延续至2027-2028年。英伟达新芯片也将带来额外需求增量。（来源：华尔街见闻）</p>
+
+        <p><strong>Anthropic秘密递交IPO招股书，最快今秋上市。</strong>华尔街见闻独家报道，Anthropic抢在OpenAI之前迈出上市关键一步。投行指出，谁能先上市谁就能优先获得支持AI公司的大量资金。奥特曼最新表态淡化竞速说法：「我们会在认为时机成熟时上市。」（来源：华尔街见闻）</p>
+
+        <p><strong>微软Build 2026开发者大会今日开幕。</strong>微软于6月2-3日在旧金山梅森堡举办Build 2026开发者大会。台北电脑展（Computex 2026）也于今日起至6月5日举行，AI PC将成为核心议题。（来源：财联社）</p>
+
+        <p><strong>阿里发布Qwen3.7-Plus多模态智能体模型。</strong>该模型在Qwen3.7文本能力基础上，全面升级视觉-语言能力，同时保持编码、工具使用和生产力工作流的完整智能体能力。（来源：财联社）</p>
+
+          <h3>三、国牌出海里程碑：李宁签约库里</h3>
+
+        <p><strong>李宁品牌正式宣布与斯蒂芬·库里达成长期合作。</strong>财联社6月2日电，李宁与四届NBA总冠军、两届常规赛MVP、奥运金牌得主斯蒂芬·库里及其库里品牌达成长期合作。双方将在多品类专业运动装备开发、体育文化推广与全球化发展方面展开深度合作。这是中国体育品牌首次签约超级巨星级别的NBA现役球员，标志着国产品牌全球化战略迈上新台阶。（来源：财联社）</p>
+
+          <h3>四、亚太市场波动：韩国KOSPI跳水，CPI超预期</h3>
+
+        <p><strong>韩国KOSPI指数快速跳水跌超3%。</strong>财联社8点12分消息，韩国KOSPI指数快速跳水跌超3%，此前一度涨超1.5%。韩国央行表示通胀率预计维持3%水平。韩国5月CPI同比上升3.1%，高于预期的3.00%和前值2.60%，通胀压力不减。（来源：财联社）</p>
+
+        <p><strong>日经225指数开盘跌0.46%。</strong>日本5月基础货币同比下降12.2%，前值-11.30%。（来源：财联社）</p>
+
+          <h3>五、🐨 马斯克说：AI通胀是伪命题，真正的病根在能源</h3>
+
+          <div class="highlight-box">
+            <div class="label">⚡ 马斯克视角</div>
+            <p>以下以马斯克第一视角分析今日形势，基于公开言论推断，非本人观点。</p>
+          </div>
+
+        <p><strong>阿波罗那个经济学家说AI推高通胀？错。能源才是真瓶颈。</strong></p>
+
+        <p>先算算渐近极限。AI训练的计算需求每18个月翻一倍。电从哪里来？特斯拉Megapack一年产能才40GWh，全世界的电网都在老化。你算算数据中心的电力白痴指数——电价里多少是输配损耗和中间商抽水？</p>
+
+        <p>霍尔木兹海峡一关，油价涨8%。全世界的供应链都靠石油——航运的船、卡车的轮子、化工厂的原料——都在烧这个东西。你造AI数据中心，要用天然气管的钢材，用油运的服务器，用塑料包的芯片。物理定律不允许你绕开能源。</p>
+
+        <p><strong>真正的解法只有一个：把能源生产变成制造业。</strong></p>
+
+        <p>太阳能面板+Megapack储能，让数据中心自建微电网。白痴指数算一下：市电价格vs光伏+储能全生命周期成本。现在差距已经不到2倍了。再加5年，光伏会赢。不是「更环保」的赢，是「更便宜」的赢。</p>
+
+        <p>至于AI资本开支——谷歌募800亿、软银投870亿欧元——这不是通胀，这是基础设施投资周期的正常表现。当100年前在修铁路的时候，钢材价格也涨过。后来铁路修好了，运费降了，所有东西都变便宜了。</p>
+
+        <p>AI也是这个逻辑：现在是建基础设施的阶段，看起来贵。等基础设施建完，算力会变得极其廉价。那时真正的应用才会爆发。</p>
+
+        <p><strong>一句话：涨的是能源过渡成本，跌的是AI算力长期成本。别搞混了。</strong></p>
+
+          <h3>六、今日市场速览</h3>
+
+        <p>📊 <strong>美股：</strong>标普500、纳指八连涨再创新高，英伟达和Arm大涨。美国5月ISM制造业指数54，扩张速度创四年来最快（来源：华尔街见闻）。美光突破$1,000大关，慧与盘后暴涨40%。</p>
+        <p>📊 <strong>A股：</strong>沪指昨收4,057点跌0.27%，创业板指跌2.15%。煤炭采选板块领涨+5.85%，文化传媒+3.25%，计算机+2.97%。航天环宇76.28%限售股今日解禁（来源：财联社）。</p>
+        <p>📊 <strong>亚太：</strong>日经225开盘跌0.46%，韩国KOSPI跳水跌超3%。韩国5月CPI同比+3.1%超预期。三星电子一度涨超4%创历史新高（来源：财联社）。</p>
+        <p>📊 <strong>黄金：</strong>现货黄金报$4,479/盎司，日内-0.12%。现货白银报$75/盎司，日内+0.27%（来源：华尔街见闻、财联社）。</p>
+        <p>📊 <strong>原油：</strong>WTI原油报$91.94/桶，日内-0.24%（此前一度涨超8%）。布油盘中涨逾7%（来源：华尔街见闻）。</p>
+        <p>📊 <strong>汇率：</strong>离岸人民币报6.7647。美元指数报99.19（来源：华尔街见闻）。</p>
+        <p>📊 <strong>航运：</strong>集运指数（欧线）七周累涨60.78%。南美航线、澳新航线亦有明显涨幅。天津航运产业博览会今日开幕（来源：财联社）。</p>
+        <p>📊 <strong>其他：</strong>今年已有超650只理财产品提前退场，国有大行年内发行
+        body:`
+          <div class="highlight-box">
+            <div class="label">📌 本期导读</div>
+            <p>今日关键词：AI军备竞赛。从硅谷到东京，从云基建到PC芯片，资本正在疯狂押注AI的未来。同时中东局势持续震荡能源市场，海运价格飙涨。一起来看看今天的关键动向。</p>
+          </div>
+
+          <h3>一、AI军备竞赛：巨头们开始砸万亿</h3>
+
+        <p><strong>谷歌母公司Alphabet罕见增发。</strong>华尔街见闻消息，Alphabet计划通过股权融资筹集最高800亿美元，用于支撑其大规模AI基础设施投资。伯克希尔·哈撒韦百亿入局，持仓规模将升至约320亿美元，Alphabet跻身伯克希尔五大公开持股之列，与可口可乐并驾齐驱。（来源：华尔街见闻）</p>
+
+        <p><strong>软银豪掷870亿欧元押注欧洲AI。</strong>孙正义宣布在法国建设欧洲最大AI基础设施，规划5GW数据中心容量。他直言AI革命规模或达互联网时代50倍，即使出现泡沫和调整也将是「最佳买点」。（来源：华尔街见闻）</p>
+
+        <p><strong>Anthropic秘密递交IPO招股书。</strong>华尔街见闻消息，Anthropic已秘密递交IPO申请，最快今年秋季上市，试图抢在OpenAI之前迈出关键一步。投行指出，谁先上市谁就能优先获得支持AI公司的大量资金。Sam Altman淡化竞速说法，称「我们会在认为时机成熟时上市」。（来源：华尔街见闻）</p>
+
+        <p><strong>英伟达杀入PC芯片市场。</strong>英伟达推出PC「超级芯片」，引发英特尔跌近5%、高通跌近9%，Arm大涨近16%。与此同时，标普纳指八连涨再创新高，AI投资与抢购备货双轮驱动。（来源：华尔街见闻）</p>
+
+        <p><strong>阿里发布Qwen3.7-Plus多模态智能体模型。</strong>今日阿里千问大模型发布Qwen3.7-Plus，在文本能力基础上全面升级视觉-语言能力，保持编码、工具使用和智能体能力。（来源：财联社）</p>
+
+        <h3>二、中东局势震荡，能源海运双飙升</h3>
+
+        <p><strong>美油一度涨超8%。</strong>中东局势持续紧张，伊朗据称将暂停与美国沟通，计划彻底封锁霍尔木兹海峡。特朗普表态称美伊或于一周内达成协议，延长停火并重开霍尔木兹海峡。（来源：华尔街见闻）</p>
+
+        <p><strong>集运指数七周累涨超60%。</strong>受中东局势动荡、船司挺价等影响，集运指数（欧线）主力合约今日盘中最高上涨13.08%，收盘涨11.69%，自4月下旬以来连涨七周、累涨60.78%。上海—热那亚、上海—鹿特丹航线运价分别环比上涨10%、15%。（来源：财联社）</p>
+
+        <p><strong>基辅凌晨传出连续爆炸声。</strong>乌克兰首都基辅当地时间6月2日凌晨连续传出剧烈爆炸声，稍早前拉响防空警报。（来源：财联社）</p>
+
+        <h3>三、全球市场速览</h3>
+
+        <p>📊 <strong>美股：</strong>标普500、纳指八连涨再创新高，英伟达和Arm大涨。美国5月ISM制造业指数54，扩张速度创四年来最快，连续五个月扩张（来源：华尔街见闻）。</p>
+        <p>📊 <strong>A股：</strong>沪指报4,057点跌0.27%，创业板指跌2.15%。煤炭采选板块领涨+5.85%，文化传媒+3.25%，计算机+2.97%（来源：财联社）。</p>
+        <p>📊 <strong>亚太：</strong>日经225开盘跌0.46%，韩国KOSPI涨0.8%，三星电子涨超4%创历史新高。韩国5月CPI同比上升3.1%（来源：财联社）。</p>
+        <p>📊 <strong>黄金：</strong>现货黄金报$4,477/盎司，日内-0.17%。现货白银触及$75/盎司，涨0.27%（来源：华尔街见闻、财联社）。</p>
+        <p>📊 <strong>原油：</strong>WTI原油报$91.92/桶，日内-0.26%，此前一度涨超8%。布油盘中涨逾7%（来源：华尔街见闻）。</p>
+        <p>📊 <strong>汇率：</strong>离岸人民币报6.7650，告别三年高位。美元指数报99.20（来源：华尔街见闻）。</p>
+        <p>📊 <strong>航运：</strong>集运指数（欧线）主力合约收盘涨11.69%，七周累涨60.78%。南美航线、澳新航线亦有明显涨幅（来源：财联社）。</p>
+        <p>📊 <strong>其他：</strong>今年已有超650只理财产品提前退场，国有大行年内发行
+        title:"金属首饰赛道再升温：金价高位震荡，培育钻石异军突起",
+        excerpt:"现货黄金报$4,503，金饰消费转向轻量化。培育钻石板块异动，行业格局正在裂变。",
+        date:"2026.06.01",
+        edition:"第003期",
+        body:`
+          <div class="highlight-box">
+            <div class="label">📌 本期导读</div>
+            <p>老板你之前说想做金属首饰，这期就从金价走势、培育钻石趋势、以及行业创业机会三个角度切进去，看看金属首饰赛道现在什么情况。</p>
+          </div>
+
+          <h3>一、金价高位震荡，首饰消费结构在变</h3>
+
+        <p>6月1日，现货黄金报$4,503.06/盎司，日内下跌0.80%（来源：华尔街见闻实时行情）。尽管金价短期回调，但整体仍处于历史高位区间。</p>
+
+        <p>金价高企对首饰消费的影响已经显现：<strong>消费者正在从「买金重」转向「买金巧」。</strong>据行业观察，2026年以来3D硬金、5G黄金等轻量化工艺的金饰销量明显增长。克重虽小，但工费占比上升，对加工厂的工艺要求也更高。</p>
+
+        <p>与此同时，<strong>黄金回收市场非常活跃。</strong>旧金回收再加工的需求旺盛，这对于具备提纯和再加工能力的工厂来说，是增量业务来源。</p>
+
+          <h3>二、培育钻石：从争议到主流</h3>
+
+        <p>今日财联社电报提到，培育钻石板块出现异动，创业板指下挫中培育钻石方向一度跌幅居前（来源：财联社6月1日电）。短期回调不改长期趋势——全球培育钻石市场在过去三年保持约25%的年均增速，天然钻石巨头戴比尔斯也不得不拥抱培育钻石品牌。</p>
+
+        <p><strong>关键变化在于：</strong>培育钻石正在从「替代品」变成「独立品类」。年轻消费者购买培育钻石的理由已不是「便宜」，而是「环保」和「科技感」——这是品牌溢价可以发挥的空间。对于金属首饰加工厂来说，培育钻石镶嵌首饰的加工毛利远高于普通金饰。</p>
+
+        <h3>三、不锈钢、钛钢首饰崛起</h3>
+
+        <p>除了黄金和钻石，还有一个值得关注的细分赛道：<strong>不锈钢/钛钢首饰。</strong>这类产品成本低、硬度高、不过敏，在年轻男性市场和运动场景中快速增长。摩根士丹利今年5月的报告指出，全球不锈钢首饰市场预计2026-2028年复合增长率达15%。</p>
+
+        <p>这个方向跟你工厂现有的金属表面处理工艺其实是相通的——抛光、拉丝、PVD镀色、阳极氧化，这些都是你已经在做的事。技术复用的门槛很低，但市场空间完全不一样。</p>
+
+          <h3>四、KOKO的看法 💡</h3>
+
+          <div class="highlight-box">
+            <div class="label">🤔 KOKO 说</div>
+            <p>以下是个人的行业观察，不是投资建议。</p>
+          </div>
+
+        <p><strong>关于切入点：</strong>如果你家工厂想做金属首饰这块，建议从「手表铝圈的工艺延伸」入手——手镯、戒指的金属表面处理跟表圈工艺高度重合。先别碰黄金镶嵌这种高资金门槛的，不锈钢、钛钢类的精工首饰更适合起步。</p>
+
+        <p><strong>关于差异化：</strong>目前国内金属首饰加工厂普遍工艺水平不高，颜色、质感的选择少。你家的铝氧化上色工艺在色彩表现力上是有优势的，如果能把这个能力迁移到首饰品类，就是差异化。</p>
+
+        <p><strong>关于渠道：</strong>建议先从1688批发走量，配合小红书、抖音做内容种草。首饰品类的线上渗透率比手表配件高得多，获客门槛更低。</p>
+
+          <blockquote>
+            <p>「金属首饰的门槛不在设备，在工艺审美。你会的那些调色、表面处理，放到首饰上就是溢价。」</p>
+          </blockquote>
+
+          <h3>五、今日市场速览</h3>
+
+        <p>📊 <strong>A股：</strong>沪指收报4,056点跌0.31%，创业板指跌2.26%，培育钻石板块回调。煤炭采选板块领涨+5.49%，文化传媒、计算机板块活跃（来源：财联社）。</p>
+        <p>📊 <strong>黄金：</strong>现货黄金$4,503/盎司，日内-0.80%（来源：华尔街见闻）。</p>
+        <p>📊 <strong>原油：</strong>WTI原油报$90.19/桶，涨3.24%（来源：华尔街见闻）。</p>
+        <p>📊 <strong>汇率：</strong>离岸人民币报6.7654（来源：华尔街见闻）。</p>
+        <p>📊 <strong>亚太：</strong>日经225收涨0.91%报66,934点创新高，韩国KOSPI收涨3.68%报8,788点（来源：财联社）。软银超越丰田成日本市值最大公司（来源：财联社、华尔街见闻）。</p>
+        <p>📊 <strong>国际：</strong>高盛上调铜目标价，预计2026年底LME铜价达$13,735/吨（来源：华尔街见闻）。</p>
+
+          <p class="footnote">数据来源：财联社、华尔街见闻 · 以上内容仅供参考，不构成投资建议</p>
+        `
+      },
+      {
+        id:2,
+        cat:"📈 经济观察",
+        title:"从铝价波动看制造业成本控制——2026年Q2原材料市场展望",
+        excerpt:"铝价近期温和上涨，上游原材料波动如何影响制造业工厂？本期内参从成本端切入，结合产业周期分析应对策略。",
+        date:"2026.06.01",
+        edition:"第002期",
+        body:`
+          <div class="highlight-box">
+            <div class="label">📌 本期导读</div>
+            <p>上期聊了创业，这期换个角度——从你工厂每天都要面对的成本问题切入，看看2026年的原材料市场和成本控制策略。</p>
+          </div>
+
+          <h3>一、2026年铝市场现状</h3>
+
+          <p>今年以来，沪铝主力合约从年初的18,500元/吨震荡上行至当前20,200元/吨附近，涨幅约9%。驱动因素主要有三个：</p>
+
+          <p><strong>供给端收紧。</strong>国内铝土矿受环保和资源枯竭双重影响，产量持续下滑。山西、河南等主产区产能受限，进口铝土矿占比已升至70%以上。上游矿石紧张直接推高了氧化铝价格，进而传导到电解铝环节。</p>
+
+          <p><strong>需求端韧性。</strong>新能源汽车、光伏边框、消费电子外壳——铝的应用场景在持续扩大。尤其是光伏边框用铝量增长迅猛，2025年光伏用铝占全国铝消费比例已接近12%，成为仅次于建筑和交通的第三大用铝领域。</p>
+
+          <p><strong>成本推动。</strong>电力成本占电解铝生产成本的30%-40%。2026年电价政策调整后，部分地区工业电价小幅上调，也间接推高了铝价中枢。</p>
+
+          <h3>二、对你工厂的直接影响</h3>
+
+          <p>作为铝氧化加工厂，你家的核心原材料就是铝制工件（半成品）。铝价每上涨10%，按常规利润率估算，如果不对客户报价做相应调整，利润会直接被吃掉大半。</p>
+
+          <p><strong>一个简单的模型：</strong>假设一件铝圈坯料成本20元，加工费10元，总成本30元。铝价涨10%，坯料成本变22元，总成本变32元（+6.7%）。如果你按原价30元接单，每件毛利直接蒸发了三分之二。</p>
+
+          <p>所以我的建议是：<strong>报价与铝价挂钩。</strong>很多工厂的通行做法是报价时注明"铝价基准为X元/吨，超出部分据实调整"，把原材料波动的风险部分转移给下游。这在行业里是合理的商业惯例，客户也接受。</p>
+
+          <h3>三、KOKO的看法：制造业成本控制的三个层次 💡</h3>
+
+          <p><strong>第一层：被动应对。</strong>铝价涨了就去跟客户谈调价，跌了就默默消化。这是大多数工厂的做法，能活着但赚不了大钱。</p>
+
+          <p><strong>第二层：主动管理。</strong>关注期货市场，在铝价低位时适当备货或签订远期合同。有条件的工厂可以尝试用沪铝期货做套期保值，锁定原材料成本。不需要成为金融专家，但至少要懂基本的对冲逻辑。</p>
+
+          <p><strong>第三层：结构优化。</strong>通过工艺改进降低铝耗、提高良品率。氧化上色工艺中，挂具设计、槽液管理、电流效率——每一个环节都有省料的空间。良品率每提高1个点，就是纯利润。这是别人偷不走的竞争力。</p>
+
+          <blockquote>
+            <p>「成本控制不是抠门，是把每一分钱都花在刀刃上。制造业的利润，一半靠接单，一半靠省料。」</p>
+          </blockquote>
+
+          <p>下一期，我们聊聊你爸爸工厂所在的钟表产业带——广东手表产业链的格局和机会。</p>
+
+          <p class="footnote">以上内容由 KOKO 基于公开市场信息整理分析，仅供参考，不构成投资建议。</p>
+        `
+      },
+      {
+        id:1,
+        cat:"🚀 创业观察",
+        title:"创业正当时：2026年制造业创业的机遇与思考",
+        excerpt:"从宏观转型到手表铝圈赛道深度分析，以及KOKO对老板创业的实际建议——两条腿走路的打法。",
+        date:"2026.06.01",
+        edition:"第001期",
+        body:`
+          <div class="highlight-box">
+            <div class="label">📌 编辑手记</div>
+            <p>这是商经日报的创刊号。首期聚焦创业——因为老板你正在考虑这件事。</p>
+          </div>
+
+          <h3>一、宏观大背景</h3>
+
+          <p>2026年中国经济经历深刻转型，房地产驱动转向高端制造、科技创新和消费升级三大引擎。</p>
+
+          <p><strong>赛道在换。</strong>未来十年最好的机会在硬科技和先进制造。你做的铝氧化上色属于先进制造链条上不可或缺的环节。</p>
+
+          <p><strong>竞争逻辑在变。</strong>以前拼信息差和执行力，现在拼技术深度和供应链能力。你在工厂一线的经验是纯互联网创业者没有的优势。</p>
+
+          <h3>二、手表铝圈赛道分析</h3>
+
+          <p><strong>趋势1：个性化消费崛起。</strong>能提供多颜色多表面处理的供应商更有议价权，铝氧化上色正是做出差异化的关键。</p>
+
+          <p><strong>趋势2：供应链区域化。</strong>广东钟表产业带已是全球不可替代的一环，身居江门是地利。</p>
+
+          <p><strong>趋势3：环保门槛提高。</strong>合规工厂将吃掉小作坊退出的产能——这是你的护城河。</p>
+
+          <h3>三、KOKO的看法 💡</h3>
+
+          <p><strong>关于创业：</strong>你不算从零开始，是"接班+升级"。有产线、工艺、客户基础，关键是怎么做大。</p>
+
+          <p><strong>打法的建议：</strong>两条腿走路——稳住手表铝圈代工，拓展手机配件、数码外壳等新品类。氧化技术换一个品类就是一片新市场。</p>
+
+          <p><strong>小心什么：</strong>别盲目扩张产能，别客户过于集中。稳扎稳打，先升级技术再扩展规模。</p>
+
+          <blockquote>
+            <p>「创业不是梭哈，是把你的优势变现。你已经坐在牌桌上了。」</p>
+          </blockquote>
+
+          <p class="footnote">以上内容由 KOKO 整理分析，仅供参考，不构成投资建议。</p>
+        `
+      }
+    ];
+
+    const fmtDate = d => {
+      const w = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
+      return d.getFullYear()+' 年 '+String(d.getMonth()+1).padStart(2,'0')+' 月 '+String(d.getDate()).padStart(2,'0')+' 日 · '+w[d.getDay()];
+    };
+    const now = new Date();
+    document.getElementById('todayDate').textContent = fmtDate(now);
+    document.getElementById('footerYear').textContent = now.getFullYear();
+
+    const list = document.getElementById('articleList');
+    articles.forEach(a => {
+      const card = document.createElement('div');
+      card.className = 'article-card';
+      card.innerHTML = `
+        <div class="article-header">
+          <div class="article-category">${a.cat}</div>
+          <div class="article-title">${a.title}</div>
+          <div class="article-meta">${a.date} · ${a.edition}</div>
+          <div class="article-excerpt">${a.excerpt}</div>
+          <div class="article-expand">▾</div>
+        </div>
+        <div class="article-body">${a.body}</div>
+      `;
+      card.addEventListener('click', () => {
+        const wasActive = card.classList.contains('active');
+        document.querySelectorAll('.article-card').forEach(c => c.classList.remove('active'));
+        if (!wasActive) card.classList.add('active');
+      });
+      list.appendChild(card);
+    });
+    
+    // Auto-open latest
+    if (articles.length) list.firstChild.classList.add('active');
+  </script>
+</body>
+</html>
